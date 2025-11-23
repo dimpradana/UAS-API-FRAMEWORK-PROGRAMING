@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GudangKu - Barang Tersedia untuk Distributor</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    /* Hero Section */
+    .hero {
+      background: linear-gradient(rgba(0, 128, 0, 0.7), rgba(0, 128, 0, 0.7)), url('https://images.unsplash.com/photo-1581090700227-4c4d1a3a5f9d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80') center/cover no-repeat;
+      color: #fff;
+      padding: 80px 20px;
+      text-align: center;
+    }
+    .hero h1 {
+      font-weight: 700;
+      font-size: 2.5rem;
+    }
+    .hero p {
+      font-size: 1.2rem;
+    }
+
+    /* Card Styling */
+    .card {
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    }
+    .card-img-top {
+      height: 200px;
+      object-fit: cover;
+    }
+    .card-title {
+      min-height: 3rem;
+      font-weight: 600;
+    }
+
+    /* Navbar */
+    .navbar {
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+
+    /* Footer */
+    footer {
+      background: #198754;
+      color: #fff;
+      padding: 20px 0;
+      margin-top: 50px;
+    }
+
+    /* Dark Mode */
+    body.dark-mode {
+      background-color: #121212;
+      color: #e0e0e0;
+    }
+    body.dark-mode .navbar {
+      background-color: #1f1f1f !important;
+    }
+    body.dark-mode .hero {
+      background: linear-gradient(rgba(30, 30, 30, 0.8), rgba(30, 30, 30, 0.8)), url('https://images.unsplash.com/photo-1581090700227-4c4d1a3a5f9d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80') center/cover no-repeat;
+    }
+    body.dark-mode .card {
+      background-color: #1e1e1e;
+      color: #e0e0e0;
+    }
+    body.dark-mode .bg-light {
+      background-color: #2a2a2a !important;
+    }
+    body.dark-mode footer {
+      background: #1f1f1f;
+    }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-success">
+    <div class="container">
+      <a class="navbar-brand fw-bold" href="#">GudangKu Distributor</a>
+      <div class="d-flex">
+        <button id="darkModeToggle" class="btn btn-outline-light me-2">🌙 Dark Mode</button>
+        <a href="admin/login.html" class="btn btn-outline-light">Login Admin</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <h1>Selamat Datang di GudangKu</h1>
+    <p>Temukan berbagai barang tersedia untuk distributor dengan mudah dan cepat</p>
+  </section>
+
+  <!-- Main Content -->
+  <div class="container mt-5">
+    <h2 class="mb-4 text-center text-success">Katalog Barang Tersedia</h2>
+    
+    <!-- Filter & Pencarian -->
+    <div class="row mb-4 p-3 bg-light border rounded shadow-sm">
+      <div class="col-md-5">
+        <input type="text" id="searchInput" class="form-control form-control-lg" placeholder="Cari Nama Barang atau SKU...">
+      </div>
+      <div class="col-md-4">
+        <select id="kategoriFilter" class="form-select form-select-lg">
+          <option value="">Semua Kategori</option>
+        </select>
+      </div>
+      <div class="col-md-3">
+        <button onclick="loadStok()" class="btn btn-success btn-lg w-100">Cari & Filter</button>
+      </div>
+    </div>
+
+    <!-- Pesan Loading/Error -->
+    <div id="loading" class="alert alert-info d-none">Memuat data barang...</div>
+    <div id="error" class="alert alert-danger d-none"></div>
+
+    <!-- Grid Barang -->
+    <div class="row" id="barangContainer">
+      <!-- Daftar barang akan dimuat di sini -->
+    </div>
+    
+    <!-- Pagination -->
+    <nav aria-label="Page navigation example mt-4" id="paginationNav" class="d-none">
+      <ul class="pagination justify-content-center" id="pagination"></ul>
+    </nav>
+  </div>
+
+  <!-- Footer -->
+  <footer class="text-center">
+    <div class="container">
+      <p class="mb-0">© 2025 GudangKu. Semua Hak Dilindungi.</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/js/app.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      loadKategori();
+      loadStok();
+
+      // Dark Mode Toggle
+      const toggleBtn = document.getElementById('darkModeToggle');
+      toggleBtn.addEventListener('click', () => {
+        document.body.classList.toggle('dark-mode');
+        toggleBtn.textContent = document.body.classList.contains('dark-mode') ? '☀️ Light Mode' : '🌙 Dark Mode';
+      });
+    });
+  </script>
+</body>
+</html>
