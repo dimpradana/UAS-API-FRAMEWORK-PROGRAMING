@@ -9,6 +9,36 @@ from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly, IsAdminUser
 from rest_framework.filters import SearchFilter, OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.permissions import BasePermission, SAFE_METHODS
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+
+
+# Custom permission: allow safe methods to everyone; require authentication for write;
+# require staff/admin for DELETE specifically
+class IsAuthenticatedOrAdminDelete(BasePermission):
+    def has_permission(self, request, view):
+        # Allow GET, HEAD, OPTIONS for everyone
+        if request.method in SAFE_METHODS:
+            return True
+        # DELETE requires admin/staff
+        if request.method == 'DELETE':
+            return bool(request.user and request.user.is_authenticated and request.user.is_staff)
+        # Other unsafe methods require authenticated user
+        return bool(request.user and request.user.is_authenticated)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def current_user(request):
+    user = request.user
+    return Response({
+        'id': user.id,
+        'username': user.username,
+        'is_staff': user.is_staff,
+        'is_superuser': user.is_superuser,
+    })
 
 # Impor Model dan Serializer
 from .models import Kategori, Supplier, Barang, Gudang, Stok, RiwayatStok
@@ -45,7 +75,7 @@ class BarangDeleteView(LoginRequiredMixin, DeleteView):
 class KategoriViewSet(viewsets.ModelViewSet):
     queryset = Kategori.objects.all().order_by('nama')
     serializer_class = KategoriSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [IsAuthenticatedOrAdminDelete]
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     search_fields = ['nama', 'deskripsi']
     ordering_fields = ['nama', 'dibuat_pada']
@@ -53,7 +83,7 @@ class KategoriViewSet(viewsets.ModelViewSet):
 class SupplierViewSet(viewsets.ModelViewSet):
     queryset = Supplier.objects.all().order_by('nama')
     serializer_class = SupplierSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [IsAuthenticatedOrAdminDelete]
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     search_fields = ['nama', 'kontak', 'telepon', 'email']
     ordering_fields = ['nama', 'dibuat_pada']
@@ -61,7 +91,7 @@ class SupplierViewSet(viewsets.ModelViewSet):
 class BarangViewSet(viewsets.ModelViewSet):
     queryset = Barang.objects.all().order_by('-dibuat_pada')
     serializer_class = BarangSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [IsAuthenticatedOrAdminDelete]
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     search_fields = ['sku', 'nama', 'kategori__nama', 'supplier__nama']
     filterset_fields = ['kategori', 'supplier']
@@ -70,7 +100,7 @@ class BarangViewSet(viewsets.ModelViewSet):
 class GudangViewSet(viewsets.ModelViewSet):
     queryset = Gudang.objects.all().order_by('nama')
     serializer_class = GudangSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [IsAuthenticatedOrAdminDelete]
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     search_fields = ['nama', 'lokasi']
     ordering_fields = ['nama', 'dibuat_pada']
@@ -78,7 +108,7 @@ class GudangViewSet(viewsets.ModelViewSet):
 class StokViewSet(viewsets.ModelViewSet):
     queryset = Stok.objects.filter(jumlah__gt=0).order_by('-diperbarui_pada')
     serializer_class = StokSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [IsAuthenticatedOrAdminDelete]
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     search_fields = ['barang__sku', 'barang__nama', 'gudang__nama']
     filterset_fields = ['gudang', 'barang']

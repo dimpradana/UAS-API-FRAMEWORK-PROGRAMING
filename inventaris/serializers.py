@@ -29,10 +29,11 @@ class StokSerializer(serializers.ModelSerializer):
     barang_sku = serializers.CharField(source='barang.sku', read_only=True)
     gudang_nama = serializers.CharField(source='gudang.nama', read_only=True)
     barang_satuan = serializers.CharField(source='barang.satuan', read_only=True)
+    barang_gambar = serializers.ReadOnlyField(source='barang.gambar_url') 
     
     class Meta:
         model = Stok
-        fields = ['id', 'barang', 'barang_nama', 'barang_sku', 'gudang', 'gudang_nama', 'jumlah', 'level_reorder', 'diperbarui_pada', 'barang_satuan']
+        fields = ['id', 'barang', 'barang_nama', 'barang_sku', 'gudang', 'gudang_nama', 'jumlah', 'level_reorder', 'diperbarui_pada', 'barang_satuan','barang_gambar']
 
 class RiwayatStokSerializer(serializers.ModelSerializer):
     stok_barang = serializers.CharField(source='stok.barang.nama', read_only=True)

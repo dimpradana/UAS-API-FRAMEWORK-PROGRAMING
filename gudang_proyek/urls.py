@@ -24,6 +24,7 @@ urlpatterns = [
     # Admin Django
     path('admin/', admin.site.urls),
     
+    
     # URL untuk Web Views Aplikasi Inventaris (CBV)
     path('inventaris/', include('inventaris.urls')),
     

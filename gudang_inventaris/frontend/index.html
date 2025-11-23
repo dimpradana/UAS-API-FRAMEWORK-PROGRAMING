@@ -4,124 +4,298 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>GudangKu - Barang Tersedia untuk Distributor</title>
+  
+  <!-- Bootstrap & Google Fonts -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
   <style>
+    :root {
+      --primary-color: #0f5132;
+      --secondary-color: #198754;
+      --accent-color: #d1e7dd;
+      --bg-light: #f8f9fa;
+      --text-dark: #212529;
+      --card-radius: 16px;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: var(--bg-light);
+      color: var(--text-dark);
+      transition: background-color 0.4s ease, color 0.4s ease;
+    }
+
+    /* Navbar Glassmorphism */
+    .navbar {
+      backdrop-filter: blur(10px);
+      background-color: rgba(15, 81, 50, 0.85) !important;
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+      padding: 15px 0;
+    }
+    .navbar-brand {
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+
     /* Hero Section */
     .hero {
-      background: linear-gradient(rgba(0, 128, 0, 0.7), rgba(0, 128, 0, 0.7)), url('https://images.unsplash.com/photo-1581090700227-4c4d1a3a5f9d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80') center/cover no-repeat;
+      background: linear-gradient(135deg, rgba(15, 81, 50, 0.9), rgba(25, 135, 84, 0.7)), 
+                  url('https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=1600&q=80') center/cover no-repeat;
       color: #fff;
-      padding: 80px 20px;
+      padding: 140px 20px 100px; /* Extra padding bottom for floating search */
       text-align: center;
+      border-radius: 0 0 50px 50px;
+      margin-bottom: 40px;
+      position: relative;
     }
     .hero h1 {
-      font-weight: 700;
-      font-size: 2.5rem;
+      font-weight: 800;
+      font-size: 3.5rem;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+      animation: fadeInUp 0.8s ease forwards;
     }
     .hero p {
       font-size: 1.2rem;
+      opacity: 0.9;
+      max-width: 600px;
+      margin: 0 auto;
+      animation: fadeInUp 1.2s ease forwards;
+    }
+
+    /* Floating Search Bar */
+    .search-container {
+      margin-top: -70px; /* Pull up over hero */
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+      border: 1px solid rgba(255,255,255,0.5);
+      transition: background 0.4s ease;
     }
 
     /* Card Styling */
     .card {
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      border: none;
+      border-radius: var(--card-radius);
+      background: #fff;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+      transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      height: 100%;
     }
     .card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+      transform: translateY(-10px);
+      box-shadow: 0 15px 30px rgba(25, 135, 84, 0.2);
     }
     .card-img-top {
       height: 200px;
       object-fit: cover;
+      border-top-left-radius: var(--card-radius);
+      border-top-right-radius: var(--card-radius);
+    }
+    .card-body {
+      padding: 1.5rem;
     }
     .card-title {
-      min-height: 3rem;
-      font-weight: 600;
+      font-weight: 700;
+      color: var(--primary-color);
+      margin-bottom: 0.5rem;
+    }
+    
+    /* Form Elements */
+    .form-control, .form-select {
+      border-radius: 12px;
+      border: 1px solid #ced4da;
+      padding: 12px 15px;
+      transition: all 0.3s;
+    }
+    .form-control:focus, .form-select:focus {
+      box-shadow: 0 0 0 4px rgba(25, 135, 84, 0.15);
+      border-color: var(--secondary-color);
     }
 
-    /* Navbar */
-    .navbar {
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    /* Buttons */
+    .btn-success {
+      background-color: var(--secondary-color);
+      border: none;
+      border-radius: 12px;
+      padding: 12px 20px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+    .btn-success:hover {
+      background-color: var(--primary-color);
+      transform: scale(1.02);
+      box-shadow: 0 5px 15px rgba(25, 135, 84, 0.4);
+    }
+    .btn-outline-light {
+      border-radius: 30px;
+      border-width: 2px;
+      font-weight: 600;
+    }
+    .btn-outline-light:hover {
+      background-color: #fff;
+      color: var(--primary-color);
     }
 
     /* Footer */
     footer {
-      background: #198754;
+      background: var(--primary-color);
       color: #fff;
-      padding: 20px 0;
-      margin-top: 50px;
+      padding: 40px 0;
+      margin-top: 80px;
+      border-top-left-radius: 50px;
+      border-top-right-radius: 50px;
     }
 
-    /* Dark Mode */
+    /* Animations */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Dark Mode Styling */
     body.dark-mode {
       background-color: #121212;
       color: #e0e0e0;
     }
     body.dark-mode .navbar {
-      background-color: #1f1f1f !important;
+      background-color: rgba(20, 20, 20, 0.9) !important;
     }
     body.dark-mode .hero {
-      background: linear-gradient(rgba(30, 30, 30, 0.8), rgba(30, 30, 30, 0.8)), url('https://images.unsplash.com/photo-1581090700227-4c4d1a3a5f9d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80') center/cover no-repeat;
+       background: linear-gradient(135deg, rgba(0, 0, 0, 0.9), rgba(20, 20, 20, 0.8)), 
+                  url('https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=1600&q=80') center/cover no-repeat;
+    }
+    body.dark-mode .search-container {
+      background: #1e1e1e;
+      border-color: #333;
+    }
+    body.dark-mode .form-control, 
+    body.dark-mode .form-select {
+      background-color: #2c2c2c;
+      border-color: #444;
+      color: #fff;
+    }
+    body.dark-mode .form-control::placeholder {
+      color: #aaa;
     }
     body.dark-mode .card {
       background-color: #1e1e1e;
-      color: #e0e0e0;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.4);
     }
-    body.dark-mode .bg-light {
-      background-color: #2a2a2a !important;
+    body.dark-mode .card-title {
+      color: #66d4a0;
     }
     body.dark-mode footer {
-      background: #1f1f1f;
+      background: #0a0a0a;
+    }
+
+    @media (max-width: 768px) {
+      .hero h1 { font-size: 2.2rem; }
+      .search-container { margin-top: -40px; padding: 20px; }
     }
   </style>
 </head>
 <body>
   <!-- Navbar -->
-  <nav class="navbar navbar-expand-lg navbar-dark bg-success">
+  <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
     <div class="container">
-      <a class="navbar-brand fw-bold" href="#">GudangKu Distributor</a>
-      <div class="d-flex">
-        <button id="darkModeToggle" class="btn btn-outline-light me-2">🌙 Dark Mode</button>
-        <a href="admin/login.html" class="btn btn-outline-light">Login Admin</a>
+      <a class="navbar-brand d-flex align-items-center" href="#">
+        <i class="bi bi-box-seam-fill me-2"></i> GudangKu
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+        <div class="d-flex gap-2 mt-3 mt-lg-0">
+          <button id="darkModeToggle" class="btn btn-outline-light btn-sm">
+            <i class="bi bi-moon-stars-fill"></i> Mode
+          </button>
+          <a href="admin/login.html" class="btn btn-light text-success fw-bold btn-sm rounded-pill px-4">
+            Login Admin
+          </a>
+        </div>
       </div>
     </div>
   </nav>
 
   <!-- Hero Section -->
   <section class="hero">
-    <h1>Selamat Datang di GudangKu</h1>
-    <p>Temukan berbagai barang tersedia untuk distributor dengan mudah dan cepat</p>
+    <div class="container">
+      <h1>Stok Distributor Terlengkap</h1>
+      <p class="mt-3">Platform digital untuk pengecekan ketersediaan barang gudang secara realtime, cepat, dan akurat.</p>
+    </div>
   </section>
 
   <!-- Main Content -->
-  <div class="container mt-5">
-    <h2 class="mb-4 text-center text-success">Katalog Barang Tersedia</h2>
+  <div class="container position-relative" style="z-index: 2;">
     
-    <!-- Filter & Pencarian -->
-    <div class="row mb-4 p-3 bg-light border rounded shadow-sm">
-      <div class="col-md-5">
-        <input type="text" id="searchInput" class="form-control form-control-lg" placeholder="Cari Nama Barang atau SKU...">
+    <!-- Filter & Pencarian (Floating Card) -->
+    <div class="search-container">
+      <div class="row g-3 align-items-center">
+        <div class="col-md-5">
+          <div class="input-group">
+            <span class="input-group-text bg-transparent border-end-0"><i class="bi bi-search text-muted"></i></span>
+            <input type="text" id="searchInput" class="form-control form-control-lg border-start-0 ps-0" placeholder="Cari Nama Barang atau SKU...">
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="input-group">
+            <span class="input-group-text bg-transparent border-end-0"><i class="bi bi-filter text-muted"></i></span>
+            <select id="kategoriFilter" class="form-select form-select-lg border-start-0 ps-0">
+              <option value="">Semua Kategori</option>
+            </select>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <button onclick="loadStok()" class="btn btn-success btn-lg w-100">
+            Terapkan Filter
+          </button>
+        </div>
       </div>
-      <div class="col-md-4">
-        <select id="kategoriFilter" class="form-select form-select-lg">
-          <option value="">Semua Kategori</option>
-        </select>
-      </div>
-      <div class="col-md-3">
-        <button onclick="loadStok()" class="btn btn-success btn-lg w-100">Cari & Filter</button>
-      </div>
+    </div>
+
+    <!-- Section Header -->
+    <div class="d-flex justify-content-between align-items-center mt-5 mb-4">
+      <h3 class="fw-bold m-0"><i class="bi bi-grid-fill text-success me-2"></i>Katalog Barang</h3>
+      <span class="badge bg-success bg-opacity-10 text-success px-3 py-2 rounded-pill">Live Update</span>
     </div>
 
     <!-- Pesan Loading/Error -->
-    <div id="loading" class="alert alert-info d-none">Memuat data barang...</div>
-    <div id="error" class="alert alert-danger d-none"></div>
+    <div id="loading" class="text-center d-none py-5">
+      <div class="spinner-border text-success" style="width: 3rem; height: 3rem;" role="status"></div>
+      <p class="mt-3 text-muted fw-semibold">Sedang mengambil data dari server...</p>
+    </div>
+    <div id="error" class="alert alert-danger d-none rounded-4 shadow-sm border-0"></div>
 
     <!-- Grid Barang -->
-    <div class="row" id="barangContainer">
-      <!-- Daftar barang akan dimuat di sini -->
+    <div class="row g-4" id="barangContainer">
+      <!-- 
+        Note: Javascript akan merender card di sini.
+        Pastikan JS Anda merender struktur card yang sesuai dengan Bootstrap 5.
+        Contoh:
+        <div class="col-md-4 col-lg-3">
+          <div class="card h-100">
+             <img src="..." class="card-img-top" alt="...">
+             <div class="card-body">
+                <h5 class="card-title">Nama Barang</h5>
+                <p class="card-text text-muted">Kategori</p>
+                <div class="d-flex justify-content-between align-items-center">
+                   <span class="fw-bold text-success">Rp 50.000</span>
+                   <button class="btn btn-sm btn-outline-success rounded-pill">Detail</button>
+                </div>
+             </div>
+          </div>
+        </div>
+      -->
     </div>
     
     <!-- Pagination -->
-    <nav aria-label="Page navigation example mt-4" id="paginationNav" class="d-none">
+    <nav aria-label="Page navigation" id="paginationNav" class="d-none mt-5">
       <ul class="pagination justify-content-center" id="pagination"></ul>
     </nav>
   </div>
@@ -129,7 +303,14 @@
   <!-- Footer -->
   <footer class="text-center">
     <div class="container">
-      <p class="mb-0">© 2025 GudangKu. Semua Hak Dilindungi.</p>
+      <h5 class="fw-bold mb-3">GudangKu Distributor</h5>
+      <p class="small opacity-75 mb-4">Solusi manajemen stok terpercaya untuk bisnis Anda.</p>
+      <div class="d-flex justify-content-center gap-3 mb-4">
+        <a href="#" class="text-white"><i class="bi bi-facebook fs-5"></i></a>
+        <a href="#" class="text-white"><i class="bi bi-instagram fs-5"></i></a>
+        <a href="#" class="text-white"><i class="bi bi-whatsapp fs-5"></i></a>
+      </div>
+      <p class="mb-0 small border-top border-white border-opacity-25 pt-3">© 2025 GudangKu. Hak Cipta Dilindungi.</p>
     </div>
   </footer>
 
@@ -137,14 +318,33 @@
   <script src="assets/js/app.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      loadKategori();
-      loadStok();
+      // Pastikan fungsi ini ada di assets/js/app.js
+      if (typeof loadKategori === 'function') loadKategori();
+      if (typeof loadStok === 'function') loadStok();
 
-      // Dark Mode Toggle
+      // Dark Mode Toggle Logic
       const toggleBtn = document.getElementById('darkModeToggle');
+      
+      // Cek preferensi user sebelumnya (opsional)
+      if (localStorage.getItem('theme') === 'dark') {
+        document.body.classList.add('dark-mode');
+        toggleBtn.innerHTML = '<i class="bi bi-sun-fill"></i> Light';
+      }
+
       toggleBtn.addEventListener('click', () => {
         document.body.classList.toggle('dark-mode');
-        toggleBtn.textContent = document.body.classList.contains('dark-mode') ? '☀️ Light Mode' : '🌙 Dark Mode';
+        const isDark = document.body.classList.contains('dark-mode');
+        toggleBtn.innerHTML = isDark ? '<i class="bi bi-sun-fill"></i> Light' : '<i class="bi bi-moon-stars-fill"></i> Dark';
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+      });
+
+      // Live search trigger dengan sedikit delay (debounce) agar tidak spam request
+      let timeout = null;
+      document.getElementById('searchInput').addEventListener('input', () => {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => {
+          if (typeof loadStok === 'function') loadStok();
+        }, 500);
       });
     });
   </script>

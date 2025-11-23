@@ -4,6 +4,7 @@ from .views import (
     KategoriViewSet, SupplierViewSet, BarangViewSet,
     GudangViewSet, StokViewSet, RiwayatStokViewSet
 )
+from .views import current_user
 
 # Inisialisasi Router DRF
 router = DefaultRouter()
@@ -17,4 +18,5 @@ router.register(r'riwayat-stok', RiwayatStokViewSet, basename='riwayat-stok')
 # URL API otomatis di-generate oleh Router
 urlpatterns = [
     path('', include(router.urls)),
+    path('me/', current_user, name='current-user'),
 ]
