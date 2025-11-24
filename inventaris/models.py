@@ -30,7 +30,8 @@ class Barang(models.Model):
     kategori = models.ForeignKey(Kategori, on_delete=models.CASCADE, related_name="barang", verbose_name="Kategori")
     supplier = models.ForeignKey(Supplier, on_delete=models.SET_NULL, null=True, blank=True, related_name="barang", verbose_name="Supplier")
     satuan = models.CharField(max_length=20, verbose_name="Satuan (pcs/kg/liter)")
-    gambar_url = models.URLField(blank=True, verbose_name="URL Gambar Barang")
+    # Allow longer image URLs (some CDNs or signed URLs can be long)
+    gambar_url = models.URLField(max_length=1000, blank=True, verbose_name="URL Gambar Barang")
     dibuat_pada = models.DateTimeField(auto_now_add=True)
     diperbarui_pada = models.DateTimeField(auto_now=True)
 

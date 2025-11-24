@@ -246,7 +246,7 @@
         <div class="col-md-4">
           <div class="input-group">
             <span class="input-group-text bg-transparent border-end-0"><i class="bi bi-filter text-muted"></i></span>
-            <select id="kategoriFilter" class="form-select form-select-lg border-start-0 ps-0">
+            <select id="kategoriFilter" class="form-select form-select-lg border-start-0 ps-0" onchange="loadStok()">
               <option value="">Semua Kategori</option>
             </select>
           </div>
@@ -261,7 +261,7 @@
 
     <!-- Section Header -->
     <div class="d-flex justify-content-between align-items-center mt-5 mb-4">
-      <h3 class="fw-bold m-0"><i class="bi bi-grid-fill text-success me-2"></i>Katalog Barang</h3>
+      <h3 class="fw-bold m-0"><i class="bi bi-grid-fill text-success me-2"></i>Katalog Barang <small id="activeCategoryLabel" class="text-muted ms-2"></small></h3>
       <span class="badge bg-success bg-opacity-10 text-success px-3 py-2 rounded-pill">Live Update</span>
     </div>
 

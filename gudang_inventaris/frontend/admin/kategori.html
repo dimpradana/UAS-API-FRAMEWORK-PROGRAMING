@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard Admin - Manajemen Barang</title>
+  <title>Admin - Manajemen Kategori</title>
   
   <!-- Bootstrap 5 & Fonts -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -25,7 +25,7 @@
       color: var(--text-dark);
     }
 
-    /* Navbar Styling */
+    /* Navbar Styling (Konsisten dengan Dashboard) */
     .navbar {
       background: linear-gradient(135deg, var(--admin-primary), var(--admin-dark));
       box-shadow: 0 4px 20px rgba(192, 46, 58, 0.2);
@@ -85,19 +85,19 @@
       padding: 25px;
     }
 
-    /* Form Elements */
+    /* Form & Inputs */
     .form-label {
       font-weight: 600;
       font-size: 0.9rem;
       color: #555;
     }
-    .form-control, .form-select {
+    .form-control {
       border-radius: 10px;
       padding: 12px;
       border: 1px solid #dee2e6;
       background-color: #fcfcfc;
     }
-    .form-control:focus, .form-select:focus {
+    .form-control:focus {
       border-color: var(--admin-primary);
       box-shadow: 0 0 0 4px rgba(192, 46, 58, 0.1);
     }
@@ -121,7 +121,7 @@
       background-color: #fff5f5;
     }
 
-    /* Buttons */
+    /* Buttons & Badges */
     .btn-primary {
       background-color: var(--admin-primary);
       border-color: var(--admin-primary);
@@ -134,7 +134,7 @@
       background-color: var(--admin-dark);
       border-color: var(--admin-dark);
     }
-    .btn-secondary, .btn-outline-secondary {
+    .btn-secondary {
       border-radius: 10px;
       padding: 10px 25px;
     }
@@ -146,7 +146,7 @@
       border-radius: 20px;
     }
 
-    /* Utility */
+    /* Titles */
     .page-title {
       font-weight: 700;
       color: var(--text-dark);
@@ -167,8 +167,7 @@
   </style>
 </head>
 <body>
-  
-  <!-- Navbar Admin -->
+  <!-- Navbar -->
   <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
     <div class="container">
       <a class="navbar-brand d-flex align-items-center gap-2" href="dashboard.html">
@@ -180,8 +179,8 @@
       
       <div class="collapse navbar-collapse" id="navbarAdmin">
         <div class="navbar-nav mx-auto">
-         <a class="nav-link " href="dashboard.html"><i class="bi bi-tags me-1"></i> Kategori</a>
-          <a class="nav-link active" href="kategori.html"><i class="bi bi-box-seam me-1"></i> Barang</a>
+          <a class="nav-link " href="dashboard.html"><i class="bi bi-box-seam me-1"></i> Barang</a>
+          <a class="nav-link active" href="kategori.html"><i class="bi bi-tags me-1"></i> Kategori</a>
           <a class="nav-link" href="supplier.html"><i class="bi bi-truck me-1"></i> Supplier</a>
           <a class="nav-link" href="stok.html"><i class="bi bi-clock-history me-1"></i> Stok</a>
         </div>
@@ -205,74 +204,41 @@
 
     <div class="row">
       <div class="col-12">
-        <h3 class="page-title">Manajemen Barang</h3>
+        <h3 class="page-title">Manajemen Kategori</h3>
       </div>
     </div>
 
     <div class="row g-4">
-      <!-- Kolom Kiri: Form Input -->
+      <!-- Kolom Kiri: Form Tambah/Ubah -->
       <div class="col-lg-4">
         <div class="card h-100">
           <div class="card-header">
             <h5 id="formTitle" class="text-primary-emphasis mb-0">
-              <i class="bi bi-plus-circle-fill text-danger"></i> Input Barang
+              <i class="bi bi-plus-circle-fill text-danger"></i> Input Kategori
             </h5>
           </div>
           <div class="card-body">
-            <form id="barangForm">
-              <input type="hidden" id="barangId">
+            <form id="kategoriForm">
+              <input type="hidden" id="kategoriId">
               
               <div class="mb-3">
-                <label for="sku" class="form-label">Kode SKU <span class="text-danger">*</span></label>
+                <label for="namaKategori" class="form-label">Nama Kategori <span class="text-danger">*</span></label>
                 <div class="input-group">
-                  <span class="input-group-text bg-light border-end-0"><i class="bi bi-upc-scan"></i></span>
-                  <input type="text" class="form-control border-start-0 ps-0" id="sku" placeholder="BRG-001" required>
+                  <span class="input-group-text bg-light border-end-0"><i class="bi bi-tag"></i></span>
+                  <input type="text" class="form-control border-start-0 ps-0" id="namaKategori" placeholder="Contoh: Elektronik" required>
                 </div>
-              </div>
-
-              <div class="mb-3">
-                <label for="nama" class="form-label">Nama Barang <span class="text-danger">*</span></label>
-                <input type="text" class="form-control" id="nama" placeholder="Contoh: Kopi Bubuk" required>
               </div>
               
-              <div class="mb-3">
-                <label for="deskripsi" class="form-label">Deskripsi</label>
-                <textarea class="form-control" id="deskripsi" rows="2" placeholder="Keterangan produk..."></textarea>
-              </div>
-
-              <div class="mb-3">
-                <label for="kategori" class="form-label">Kategori <span class="text-danger">*</span></label>
-                <select class="form-select" id="kategori" required>
-                  <option selected disabled>Pilih Kategori...</option>
-                </select>
-              </div>
-
-              <div class="row g-2 mb-3">
-                <div class="col-6">
-                    <label for="supplier" class="form-label">Supplier</label>
-                    <select class="form-select" id="supplier">
-                      <option value="">-- Pilih --</option>
-                    </select>
-                </div>
-                <div class="col-6">
-                    <label for="satuan" class="form-label">Satuan</label>
-                    <input type="text" class="form-control" id="satuan" placeholder="Pcs/Box" required>
-                </div>
-              </div>
-
               <div class="mb-4">
-                <label for="gambar_url" class="form-label">URL Gambar</label>
-                <div class="input-group">
-                   <span class="input-group-text bg-light border-end-0"><i class="bi bi-image"></i></span>
-                   <input type="url" class="form-control border-start-0 ps-0" id="gambar_url" placeholder="https://...">
-                </div>
+                <label for="deskripsiKategori" class="form-label">Deskripsi (Opsional)</label>
+                <textarea class="form-control" id="deskripsiKategori" rows="4" placeholder="Keterangan kategori..."></textarea>
               </div>
 
               <div class="d-grid gap-2">
                 <button type="submit" class="btn btn-primary">
-                  <i class="bi bi-save me-1"></i> Simpan Barang
+                  <i class="bi bi-save me-1"></i> Simpan Kategori
                 </button>
-                <button type="button" onclick="resetForm()" class="btn btn-outline-secondary">
+                <button type="button" onclick="resetKategoriForm()" class="btn btn-outline-secondary" style="border-radius: 10px;">
                   <i class="bi bi-x-lg me-1"></i> Batal / Reset
                 </button>
               </div>
@@ -281,28 +247,26 @@
         </div>
       </div>
 
-      <!-- Kolom Kanan: Tabel Data -->
+      <!-- Kolom Kanan: Tabel Daftar -->
       <div class="col-lg-8">
         <div class="card h-100">
           <div class="card-header d-flex justify-content-between align-items-center">
-            <h5 class="mb-0"><i class="bi bi-list-ul text-danger"></i> Daftar Barang</h5>
-            <span class="badge badge-counter fw-bold">Data Gudang</span>
+            <h5 class="mb-0"><i class="bi bi-list-ul text-danger"></i> Daftar Kategori</h5>
+            <span id="kategoriCount" class="badge badge-counter fw-bold">0 Data</span>
           </div>
           <div class="card-body p-0">
             <div class="table-responsive">
               <table class="table table-hover mb-0 align-middle">
                 <thead class="table-light">
                   <tr>
-                    <th class="ps-4">SKU</th>
-                    <th>Nama Barang</th>
-                    <th>Kategori</th>
-                    <th>Supplier</th>
-                    <th>Satuan</th>
+                    <th class="ps-4">Nama Kategori</th>
+                    <th>Deskripsi</th>
+                    <th>Dibuat Pada</th>
                     <th class="text-end pe-4">Aksi</th>
                   </tr>
                 </thead>
-                <tbody id="barangTableBody">
-                  <!-- DATA DILOAD JS -->
+                <tbody id="kategoriTableBody">
+                  <!-- Data dimuat via JS -->
                 </tbody>
               </table>
             </div>
@@ -310,7 +274,7 @@
           <div class="card-footer bg-white text-center py-3">
             <div id="loadingTable" class="text-muted small">
               <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-              Sedang memuat data terbaru...
+              Memuat data kategori...
             </div>
           </div>
         </div>
@@ -322,16 +286,14 @@
   <script src="../assets/js/app.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
+      // Pengecekan fungsi JS agar tidak error jika app.js belum lengkap
       if (typeof checkAuth === 'function') checkAuth();
-      
-      if (typeof loadKategori === 'function') loadKategori();
-      if (typeof loadSupplier === 'function') loadSupplier();
-      if (typeof loadBarang === 'function') loadBarang();
+      if (typeof loadKategoriTable === 'function') loadKategoriTable();
     });
 
-    document.getElementById('barangForm').addEventListener('submit', (e) => {
+    document.getElementById('kategoriForm').addEventListener('submit', (e) => {
       e.preventDefault();
-      if (typeof addOrUpdateBarang === 'function') addOrUpdateBarang();
+      if (typeof addOrUpdateKategori === 'function') addOrUpdateKategori();
     });
   </script>
 </body>

@@ -113,6 +113,48 @@ class StokViewSet(viewsets.ModelViewSet):
     search_fields = ['barang__sku', 'barang__nama', 'gudang__nama']
     filterset_fields = ['gudang', 'barang']
     ordering_fields = ['jumlah', 'diperbarui_pada']
+
+    def create(self, request, *args, **kwargs):
+        """
+        Override create so that if a Stok with the same (barang, gudang) exists,
+        we update that record instead of raising a unique-together validation error.
+        This makes frontend saves idempotent when admin tries to add stok for
+        the same barang+gudang pair.
+        """
+        barang_id = request.data.get('barang')
+        gudang_id = request.data.get('gudang')
+
+        # Only attempt the upsert behavior when both foreign keys are provided
+        if barang_id and gudang_id:
+            try:
+                existing = Stok.objects.filter(barang_id=barang_id, gudang_id=gudang_id).first()
+            except Exception:
+                existing = None
+
+            if existing:
+                # Update existing stok with provided fields (jumlah, level_reorder)
+                jumlah = request.data.get('jumlah')
+                level = request.data.get('level_reorder')
+                updated = False
+                if jumlah is not None:
+                    try:
+                        existing.jumlah = int(jumlah)
+                        updated = True
+                    except Exception:
+                        pass
+                if level is not None:
+                    try:
+                        existing.level_reorder = int(level)
+                        updated = True
+                    except Exception:
+                        pass
+                if updated:
+                    existing.save()
+                serializer = self.get_serializer(existing)
+                return Response(serializer.data)
+
+        # Fallback to default behavior (will return validation errors on duplicates)
+        return super().create(request, *args, **kwargs)
     
     # ... (queryset dan serializer_class) ...
     permission_classes = [IsAuthenticatedOrReadOnly]
