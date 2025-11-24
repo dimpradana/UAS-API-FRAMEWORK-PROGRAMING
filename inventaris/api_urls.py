@@ -18,7 +18,8 @@ router.register(r'riwayat-stok', RiwayatStokViewSet, basename='riwayat-stok')
 
 # URL API otomatis di-generate oleh Router
 urlpatterns = [
-    path('', include(router.urls)),
+    # Place custom views before the router to avoid router treating 'transaction' as a pk
     path('stok/transaction/', StokTransactionAPIView.as_view(), name='stok-transaction'),
+    path('', include(router.urls)),
     path('me/', current_user, name='current-user'),
 ]
