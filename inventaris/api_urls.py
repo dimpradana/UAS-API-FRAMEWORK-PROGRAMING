@@ -5,6 +5,7 @@ from .views import (
     GudangViewSet, StokViewSet, RiwayatStokViewSet
 )
 from .views import current_user
+from .views import StokTransactionAPIView
 
 # Inisialisasi Router DRF
 router = DefaultRouter()
@@ -18,5 +19,6 @@ router.register(r'riwayat-stok', RiwayatStokViewSet, basename='riwayat-stok')
 # URL API otomatis di-generate oleh Router
 urlpatterns = [
     path('', include(router.urls)),
+    path('stok/transaction/', StokTransactionAPIView.as_view(), name='stok-transaction'),
     path('me/', current_user, name='current-user'),
 ]

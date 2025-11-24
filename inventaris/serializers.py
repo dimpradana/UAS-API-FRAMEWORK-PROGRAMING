@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from urllib.parse import urlparse, urlunparse, parse_qsl
 from .models import Kategori, Supplier, Barang, Gudang, Stok, RiwayatStok
 
 class KategoriSerializer(serializers.ModelSerializer):
@@ -18,6 +19,23 @@ class BarangSerializer(serializers.ModelSerializer):
     class Meta:
         model = Barang
         fields = ['id', 'sku', 'nama', 'deskripsi', 'kategori', 'kategori_nama', 'supplier', 'supplier_nama', 'satuan', 'gambar_url', 'dibuat_pada', 'diperbarui_pada']
+
+    def validate_gambar_url(self, value):
+        """Sanitize image URL by removing common tracking query params (utm_*, fbclid, gclid)."""
+        if not value:
+            return value
+        try:
+            p = urlparse(value)
+            if not p.scheme or not p.netloc:
+                return value
+            # Filter out tracking params
+            q = parse_qsl(p.query, keep_blank_values=True)
+            q = [(k, v) for (k, v) in q if not (k.startswith('utm_') or k in ('fbclid', 'gclid'))]
+            newq = '&'.join([f"{k}={v}" for k, v in q])
+            cleaned = urlunparse((p.scheme, p.netloc, p.path or '', p.params or '', newq, p.fragment or ''))
+            return cleaned
+        except Exception:
+            return value
 
 class GudangSerializer(serializers.ModelSerializer):
     class Meta:

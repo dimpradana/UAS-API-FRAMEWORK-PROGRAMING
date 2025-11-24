@@ -13,6 +13,10 @@ from rest_framework.permissions import BasePermission, SAFE_METHODS
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.views import APIView
+from rest_framework import status
+from django.db import transaction
+from django.shortcuts import get_object_or_404
 
 
 # Custom permission: allow safe methods to everyone; require authentication for write;
@@ -180,6 +184,57 @@ class RiwayatStokViewSet(viewsets.ModelViewSet):
     search_fields = ['stok__barang__nama', 'tipe', 'catatan']
     filterset_fields = ['tipe', 'dibuat_oleh']
     ordering_fields = ['dibuat_pada', 'jumlah']
+
+
+class StokTransactionAPIView(APIView):
+    """Endpoint to perform transactional stok IN/OUT operations in a single request.
+
+    Accepts JSON with either `stok` (id) or `barang` and `gudang` (ids), plus:
+      - tipe: 'IN' or 'OUT'
+      - jumlah: integer > 0
+      - catatan: optional text
+    """
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        tipe = (request.data.get('tipe') or '').upper()
+        try:
+            jumlah = int(request.data.get('jumlah'))
+        except Exception:
+            return Response({'jumlah': ['Jumlah harus berupa angka']}, status=status.HTTP_400_BAD_REQUEST)
+
+        if tipe not in ('IN', 'OUT'):
+            return Response({'tipe': ['Tipe harus IN atau OUT']}, status=status.HTTP_400_BAD_REQUEST)
+        if jumlah <= 0:
+            return Response({'jumlah': ['Jumlah harus lebih besar dari 0']}, status=status.HTTP_400_BAD_REQUEST)
+
+        stok_id = request.data.get('stok')
+        barang_id = request.data.get('barang')
+        gudang_id = request.data.get('gudang')
+        catatan = request.data.get('catatan', '')
+
+        with transaction.atomic():
+            if stok_id:
+                stok_qs = Stok.objects.select_for_update().filter(pk=stok_id)
+                stok = get_object_or_404(stok_qs)
+            else:
+                if not (barang_id and gudang_id):
+                    return Response({'detail': 'stok id atau barang+gudang harus diberikan'}, status=status.HTTP_400_BAD_REQUEST)
+                stok, created = Stok.objects.select_for_update().get_or_create(barang_id=barang_id, gudang_id=gudang_id, defaults={'jumlah': 0, 'level_reorder': 10})
+
+            if tipe == 'OUT':
+                if jumlah > stok.jumlah:
+                    return Response({'detail': 'Jumlah keluar melebihi stok tersedia'}, status=status.HTTP_400_BAD_REQUEST)
+                stok.jumlah -= jumlah
+            else:
+                stok.jumlah += jumlah
+
+            stok.save()
+            riwayat = RiwayatStok.objects.create(stok=stok, tipe=tipe, jumlah=jumlah, catatan=catatan, dibuat_oleh=request.user if request.user.is_authenticated else None)
+
+            stok_data = StokSerializer(stok).data
+            riwayat_data = RiwayatStokSerializer(riwayat).data
+            return Response({'stok': stok_data, 'riwayat': riwayat_data}, status=status.HTTP_200_OK)
 
 class BarangListView(LoginRequiredMixin, ListView):
     model = Barang
