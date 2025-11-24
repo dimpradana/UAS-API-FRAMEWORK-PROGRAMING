@@ -636,28 +636,16 @@ async function processStockOut() {
 
         const newJumlah = stok.jumlah - jumlahKeluar;
 
-        // Update stok (PUT)
-        const payload = { barang: stok.barang, gudang: stok.gudang, jumlah: newJumlah, level_reorder: stok.level_reorder };
-        const updateRes = await fetch(`${API_BASE_URL}/stok/${stokId}/`, {
-            method: 'PUT',
+        // Perform transactional stok OUT in one request to avoid race conditions
+        const txPayload = { stok: stokId, tipe: 'OUT', jumlah: jumlahKeluar, catatan: `${keperluan}${catatan ? ' - ' + catatan : ''}` };
+        const txRes = await fetch(`${API_BASE_URL}/stok/transaction/`, {
+            method: 'POST',
             headers: authHeaders({ 'Content-Type': 'application/json' }),
-            body: JSON.stringify(payload)
+            body: JSON.stringify(txPayload)
         });
-        if (!updateRes.ok) {
-            const err = await updateRes.json().catch(() => ({}));
+        if (!txRes.ok) {
+            const err = await txRes.json().catch(() => ({}));
             throw new Error(err.detail || JSON.stringify(err));
-        }
-
-        // Create riwayat stok (log)
-        try {
-            await fetch(`${API_BASE_URL}/riwayat-stok/`, {
-                method: 'POST',
-                headers: authHeaders({ 'Content-Type': 'application/json' }),
-                body: JSON.stringify({ stok: stokId, tipe: 'OUT', jumlah: jumlahKeluar, catatan: `${keperluan}${catatan ? ' - ' + catatan : ''}` })
-            });
-        } catch (e) {
-            // Jika gagal buat riwayat (permission), tetap lanjut
-            console.warn('Gagal membuat riwayat stok:', e);
         }
 
         // Tutup modal
